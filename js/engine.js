@@ -9,7 +9,7 @@
  * drawn but that is not the case. What's really happening is the entire "scene"
  * is being drawn over and over, presenting the illusion of animation.
  *
- * This engine makes the canvas' context (ctx) object globally available to make 
+ * This engine makes the canvas' context (ctx) object globally available to make
  * writing app.js a little simpler to work with.
  */
 
@@ -18,6 +18,8 @@ var Engine = (function(global) {
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
+
+
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
@@ -79,7 +81,18 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+
+    function checkCollisions() {
+        function range(current, min, max){
+            return current >= min && current <= max;
+        }
+        allEnemies.forEach(function(enemy) {
+            if((player.x >= enemy.x  -60 && player.x <= enemy.x + 60) && (player.y >= enemy.y  -20 && player.y <= enemy.y + 20)){
+                reset();
+            }
+        });
     }
 
     /* This is called by the update function and loops through all of the
@@ -117,7 +130,7 @@ var Engine = (function(global) {
             numRows = 6,
             numCols = 5,
             row, col;
-        
+
         // Before drawing, clear existing canvas
         ctx.clearRect(0,0,canvas.width,canvas.height)
 
@@ -137,7 +150,9 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
+        playerlists.playerImages.forEach(function (element, index){
+            ctx.drawImage(Resources.get(playerlists.playerImages[index]), index * 101, 0);
+        });
         renderEntities();
     }
 
@@ -152,6 +167,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
+        allPlayers.forEach(allPlayer =>
+            allPlayer.render()
+        );
 
         player.render();
     }
@@ -161,7 +179,11 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        allEnemies.forEach(function(enemy) {
+            enemy.x = 0;
+        });
+        player.x = 200;
+        player.y = 420;
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -173,7 +195,10 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-pink-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-cat-girl.png'
     ]);
     Resources.onReady(init);
 
