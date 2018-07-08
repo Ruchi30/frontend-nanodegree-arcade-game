@@ -117,10 +117,8 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-document.addEventListener('click', (e) => {
-  allPlayers.forEach(allPlayer => {
-    allPlayer.addEventListener('click', function(){
-      console.log("hi");
-    });
+allPlayers.forEach(allPlayer => {
+  allPlayer.addEventListener('click', () => {
+    console.log("hi");
   });
 });
